@@ -1,6 +1,6 @@
-*! version 1.0.0  31jan2022
+*! version 1.0.2  31jan2022
 
-version 13
+version 13.0
 clear all
 
 loc RS        real scalar
@@ -298,7 +298,7 @@ mata set matastrict on
 					st_numscalar("r(t2)")),                                     
 					get_cv_seas(s, (! regexm(o_hegy, "^nog| nog") ? "g " : "") +
 					            o_hegy)[2,])
-				if (T[1,3] > T[1,cols(T)+floor((100-level)/5-2)]) D = 1
+				if (T[1,3] > T[1,cols(T)+trunc((100-level)/5-2)]) D = 1
 				/* H0: seasonal unit root, t_S/2 > t_cv                       */
 			} else if (f_i & st_global("r(unit1)") != "y") {
 				errprintf(                                                      
@@ -341,13 +341,13 @@ mata set matastrict on
 					st_numscalar("r(kpss" + strofreal(T[rows(T),2]) + ")")      
 				),(! regexm(o_kpss, "^not| not") ? (0.216,0.146,0.119) :        
 					                               (0.739,0.463,0.347)))
-			} while(T[rows(T)-1,3]>T[rows(T)-1,cols(T)+floor((100-level)/5-2)] &
+			} while(T[rows(T)-1,3]>T[rows(T)-1,cols(T)+trunc((100-level)/5-2)] &
 			        /* H0: unit root,    tau > t_cv                          */ 
-			        T[rows(T),  3]>T[rows(T),  cols(T)+floor((100-level)/5-2)]  
+			        T[rows(T),  3]>T[rows(T),  cols(T)+trunc((100-level)/5-2)]  
 			        /* H0: stationarity, LM  < LM_cv                         */)
 		} else if (f_i) d = strtoreal(tokens(val[1]))[2]
 		/* lags, statistics and critical values of unit root tests, T         */
-		T[,1] = T[,3] :> T[,cols(T)+floor((100-level)/5-2)]
+		T[,1] = T[,3] :> T[,cols(T)+trunc((100-level)/5-2)]
 		// update T in the associative array                                    
 		super.put("T", T)
 		/* initial model space with|without constant, MS                      */
@@ -800,4 +800,4 @@ mata set matastrict on
 }
 end
 
-lmbuild larimaauto.mlib, replace size(8)
+version 13.0: lmbuild larimaauto.mlib, replace size(8)

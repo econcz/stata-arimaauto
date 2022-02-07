@@ -1,5 +1,4 @@
-*! version 1.0.1  31jan2022
-*! requires st0453.pkg and from net and kpss from ssc
+*! version 1.0.2  31jan2022  I I Bolotov
 
 program define arimaauto, rclass byable(recall)
 	version 13.0
@@ -8,14 +7,13 @@ program define arimaauto, rclass byable(recall)
 		algorithm through stepwise traversing of the model space or a bulk      
 		estimation. The user can choose between LLF, AIC and SIC, and pass      
 		arguments to arima (estimation), hegy, dfgls and kpss (unit root tests) 
-		commands. The output is consistent with arimasel (SSC).
-		
+		commands. The output is consistent with arimasel (SSC).                 
+
 		Author: Ilya Bolotov, MBA, Ph.D.                                        
 		Date: 15 January 2022                                                   
 	*/
 	tempname ictests icarima limits tests models vmaxLLF vminAIC vminSIC	///
 			 title rspec cspec
-
 	// install dependencies, unit root tests                                    
 	cap which hegy
 	if _rc {
@@ -26,7 +24,6 @@ program define arimaauto, rclass byable(recall)
 	if _rc {
 		ssc install kpss
 	}
-
 	// replay last result                                                       
 	if replay() {
 		if _by() {
@@ -81,7 +78,6 @@ program define arimaauto, rclass byable(recall)
 		cap ret        sca np     = e(df_m) + 1
 		exit 0
 	}
-
 	// syntax                                                                   
 	syntax																	///
 	[varlist(ts fv)] [if] [in] [iw] [,										///
@@ -98,12 +94,10 @@ program define arimaauto, rclass byable(recall)
 		INVRoot(real `=1/1.001')											///
 		ITERate(int 100) TRACE(int 0) *										///
 	]
-
 	// adjust and preprocess options                                            
 	loc iw        = cond(`"`weight'`exp'"' == "", "",  `"[`weight'`exp']"'     )
 	loc maxlag    = cond(`"`maxlag'"'      == "", ".", `"`maxlag'"'            )
 	loc maxmodels = cond(`"`maxmodels'"'   == "", ".", `"`maxmodels'"'         )
-
 	// pass arguments to ARIMAAuto                                              
 	mata: AA = ARIMAAuto()
 	mata: AA.put("varlist","`varlist'"                                         )
@@ -123,7 +117,6 @@ program define arimaauto, rclass byable(recall)
 	mata: AA.put("L",      ("`max'","`mmax'","`invroot'","`maxlag'",        ///
 	                       "`maxmodels'","`iterate'")                          )
 	mata: AA.put("MS",     ("`arima'","`sarima'")                              )
-
 	// run ARIMAAuto                                                            
 	mata: AA.start()
 	/* get information criteria                                               */
@@ -178,7 +171,6 @@ program define arimaauto, rclass byable(recall)
 		"`vminSIC'",                                                        ///
 		selectindex(AA.get("MS")[,12] :== min(AA.get("MS")[,12]))           ///
 	)
-
 	// print output                                                             
 	cap confirm mat `tests'
 	if ! _rc {
@@ -201,7 +193,6 @@ program define arimaauto, rclass byable(recall)
 	di as res    "Min SIC: Model `=`vminSIC''"
 	di as res _n "Best model based on `=ustrupper("``icarima''")':"
 	arima
-
 	// return output                                                            
 	cap ret        loc ictests  ``ictests''
 	cap ret        loc icarima  ``icarima''
@@ -213,7 +204,6 @@ program define arimaauto, rclass byable(recall)
 	cap ret        sca minsic = `vminSIC'
 	cap ret        sca N      = e(N)
 	cap ret        sca np     = e(df_m) + 1
-
 	// clear memory                                                             
 	mata: mata drop AA
 end
