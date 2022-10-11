@@ -1,27 +1,27 @@
-*! version 1.0.2  31jan2022  I I Bolotov
-
+*! version 1.0.3  07oct2022  I I Bolotov
 program define arimaauto, rclass byable(recall)
-	version 13.0
+	version 16.0
 	/*
 		Finds the best [S]ARIMA[X] model with the help of the Hyndman-Khandakar 
 		algorithm through stepwise traversing of the model space or a bulk      
-		estimation. The user can choose between LLF, AIC and SIC, and pass      
-		arguments to arima (estimation), hegy, dfgls and kpss (unit root tests) 
-		commands. The output is consistent with arimasel (SSC).                 
+		estimation. The user can choose between LLF, AIC, and SIC and pass      
+		arguments to arima (estimation), hegy, dfgls, and kpss (unit root tests)
+		commands. The output is consistent with (SSC) arimasel.                 
 
 		Author: Ilya Bolotov, MBA, Ph.D.                                        
 		Date: 15 January 2022                                                   
 	*/
 	tempname ictests icarima limits tests models vmaxLLF vminAIC vminSIC	///
 			 title rspec cspec
-	// install dependencies, unit root tests                                    
+	// check for third-party packages from SSC                                  
 	cap which hegy
 	if _rc {
-		di "please type:" in smcl _n "{cmd:. net install st0453.pkg }"
-		exit 601
+		di as err "click to install {net sj 16-3 st0453:hegy} (dependency)"
+		error 111
 	}
 	cap which kpss
 	if _rc {
+		di as err "installing {helpb kpss} (dependency)"
 		ssc install kpss
 	}
 	// replay last result                                                       

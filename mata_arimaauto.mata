@@ -1,6 +1,6 @@
-*! version 1.0.2  31jan2022
+*! version 1.0.3  07oct2022
 
-version 13.0
+version 16.0
 clear all
 
 loc RS        real scalar
@@ -10,7 +10,7 @@ loc TM        transmorphic matrix
 loc CC        class
 loc VV        void
 
-loc version   "version 13:"
+loc version   "version 16:"
 
 mata:
 mata set matastrict on
@@ -800,4 +800,4 @@ mata set matastrict on
 }
 end
 
-version 13.0: lmbuild larimaauto.mlib, replace size(8)
+version 16.0: lmbuild larimaauto.mlib, replace size(8)
