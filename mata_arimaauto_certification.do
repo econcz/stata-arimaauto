@@ -1,4 +1,4 @@
-version 16.0
+version 15.0
 
 // CERTIFICATION FILE for ARIMAAuto()
 discard
