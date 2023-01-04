@@ -326,7 +326,9 @@ mata set matastrict on
 				T = T\((                                                        
 					.,                               /* unit root             */
 					st_numscalar("r("+mode+"lag)")   /* number of lags        */
-				),(tmp=st_matrix("r(cvalues)"))[                                
+				),(tmp=st_matrix("r("                                          +
+					(strpos("`version'", "15") ? "results" : "cvalues")        +
+				")"))[                                
 					rows(tmp)-st_numscalar("r("+mode+"lag)")+1,                 
 					2..5                                                        
 				])
