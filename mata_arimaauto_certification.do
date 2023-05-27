@@ -1,9 +1,26 @@
-version 15.0
+version 15.1
 
 // CERTIFICATION FILE for ARIMAAuto()
 discard
 clear all
 mata: AA = ARIMAAuto()
+
+// yearly data
+sysuse uslifeexp.dta
+tsset year
+mata: AA.put("varlist","le")
+mata: AA.put("trace", 2)
+mata: AA.put("MS", ("",""))
+/* intermediary results */
+mata: AA.get("L")
+mata: AA.get("T")
+mata: AA.get("MS")
+/* estimate */
+mata: AA.start()
+/* final results */
+mata: AA.get("L")
+mata: AA.get("T")
+mata: AA.get("MS")
 
 // quarterly data
 sysuse gnp96.dta, clear

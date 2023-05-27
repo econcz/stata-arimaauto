@@ -1,6 +1,6 @@
 *! version 1.0.4  07oct2022
 
-version 15.0
+version 15.1
 clear all
 
 loc RS        real scalar
@@ -10,7 +10,7 @@ loc TM        transmorphic matrix
 loc CC        class
 loc VV        void
 
-loc version   "version 15.0:"
+loc version   "version 15.1:"
 
 mata:
 mata set matastrict on
@@ -300,7 +300,7 @@ mata set matastrict on
 					            o_hegy)[2,])
 				if (T[1,3] > T[1,cols(T)+trunc((100-level)/5-2)]) D = 1
 				/* H0: seasonal unit root, t_S/2 > t_cv                       */
-			} else if (f_i & st_global("r(unit1)") != "y") {
+			} else if (f_i & st_global("r(unit1)") != ".") {
 				errprintf(                                                      
 					"hegy must be used with monthly or quarterly data\n"       +
 					"please re-tsset the data or add a sarima() option\n"       
@@ -802,4 +802,4 @@ mata set matastrict on
 }
 end
 
-version 15.0: lmbuild larimaauto.mlib, replace size(8)
+version 15.1: lmbuild larimaauto.mlib, replace size(8)
