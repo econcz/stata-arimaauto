@@ -1,4 +1,4 @@
-*! version 1.0.4  07oct2022
+*! version 1.0.5  07oct2022
 
 version 15.1
 clear all
@@ -327,7 +327,7 @@ mata set matastrict on
 					.,                               /* unit root             */
 					st_numscalar("r("+mode+"lag)")   /* number of lags        */
 				),(tmp=st_matrix("r("                                          +
-					(strpos("`version'", "15") ? "results" : "cvalues")        +
+					(stataversion() < (16.0 * 100) ? "results" : "cvalues")    +
 				")"))[                                
 					rows(tmp)-st_numscalar("r("+mode+"lag)")+1,                 
 					2..5                                                        
