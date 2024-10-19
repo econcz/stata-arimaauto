@@ -1,4 +1,4 @@
-*! version 1.0.6  07oct2022  I I Bolotov
+*! version 1.0.7  07oct2024  I I Bolotov
 program define arimaauto, rclass byable(recall)
 	version 15.1
 	/*
@@ -105,13 +105,13 @@ program define arimaauto, rclass byable(recall)
 		exit 459
 	}
 	if trim(`"`seasonal'"') == "" &   ! inlist(r(unit1), ".", "q", "m") {
-		di as err "hegy must be used with monthly or quarterly data"
-		di as txt "please check " as res "tsset" as txt " or " as res "xtset"
+		di as err "hegy must be used with monthly or quarterly data"		///
+		_n as txt "please check " as res "tsset" as txt " or " as res "xtset"
 		exit 459
 	}
 	if trim(`"`seasonal'"') == "" & _N <= cond(r(unit1) == "q",  4, 12) {
-		di as err "observation numbers out of range for hegy"
-		di as txt "must be greater than " as res cond(r(unit1) == "q", 4, 12)
+		di as err "observation numbers out of range for hegy"				///
+		_n as txt "must be greater than " as res cond(r(unit1) == "q", 4, 12)
 		exit 459
 	}
 	// pass arguments to ARIMAAuto                                              

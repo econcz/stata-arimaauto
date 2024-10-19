@@ -1,4 +1,4 @@
-*! version 1.0.5  07oct2022
+*! version 1.0.7  07oct2024
 
 version 15.1
 clear all
@@ -35,7 +35,12 @@ mata set matastrict on
 		class constructor: default order and values of member variables         
 		L, T (optional) and MS should be declared last!                         
 	*/
-	`TM' tmp
+	`TM' tmp, rc
+	rc = st_tempname()
+
+	// produce error 1 on any _rc caused by pressing the break key              
+	(void) _stata("`version' loc " + rc + " = _rc", 1)
+	if (strtoreal(st_local(rc)))                                exit(error(  1))
 
 	// default values of member variables                                       
 	/* default IC, lag selection MODE  and confidence LEVEL                   */
@@ -84,9 +89,8 @@ mata set matastrict on
 		returns: N/A, updates: MS in the associative array              (. x 12)
 	*/
 	`RM' ms, c, i, j, k
-	`TM' tmp
-
-	tmp = setbreakintr(0)
+	`TM' tmp, rc
+	rc = st_tempname()
 
 	// general configuration                                                    
 	if (exists("varlist")) varlist = get("varlist")                /* varlist */
@@ -111,7 +115,9 @@ mata set matastrict on
 	do {
 		/* ARIMA for all IC == . where inverse characteristic roots ≤ L[#]    */
 		for(j = 1; j <= rows(ms); j++) {
-			if (breakkey())                                            break
+			// // produce error 1 on any _rc caused by pressing the break key   
+			(void) _stata("`version' loc " + rc + " = _rc", 1)
+			if (strtoreal(st_local(rc)))                        exit(error(  1))
 			// estimate a [S]ARIMA[X] model                                     
 			if (_stata("`version' arima " + varlist + " " + ifin + " " + iw    +
 			       ", arima("+invtokens(strofreal(ms[j,1..3]))+") "            +
@@ -171,9 +177,6 @@ mata set matastrict on
 
 	// update MS in the associative array                                       
 	super.put("MS", MS)
-
-	      breakkeyreset()
-	tmp = setbreakintr(1)
 }
 
 `VV' ARIMAAuto::put(`SS' key, `TM' val)                            /* public  */
@@ -192,9 +195,8 @@ mata set matastrict on
 		returns: N/A, updates: * in the associative array                (. x .)
 	*/
 	`RS' s, D, d, c
-	`TM' tmp
-
-	tmp = setbreakintr(0)
+	`TM' tmp, rc
+	rc = st_tempname()
 
 	// general configuration                                                    
 	level = exists("level") & (tmp=get("level")) != . ? tmp : this.level
@@ -315,7 +317,9 @@ mata set matastrict on
 				   tmp : mode
 			d--
 			do {
-				if (breakkey())                                        break
+				// produce error 1 on any _rc caused by pressing the break key  
+				(void) _stata("`version' loc " + rc + " = _rc", 1)
+				if (strtoreal(st_local(rc)))                    exit(error(  1))
 				// estimate #d recursively                                      
 				d++
 				if ((tmp=_stata("`version' dfgls "                             +
@@ -395,9 +399,6 @@ mata set matastrict on
 		MS  = MS,J(rows(MS),1,c),J(rows(MS),4,.)
 		// update MS in the associative array                                   
 		super.put("MS", MS)
-
-		      breakkeyreset()
-		tmp = setbreakintr(1)
 	}
 }
 
