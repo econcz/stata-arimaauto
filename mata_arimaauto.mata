@@ -1,4 +1,4 @@
-*! version 1.0.7  07oct2024
+* version 1.1.0  20nov2025
 
 version 15.1
 clear all
@@ -40,7 +40,7 @@ mata set matastrict on
 
 	// produce error 1 on any _rc caused by pressing the break key              
 	(void) _stata("`version' loc " + rc + " = _rc", 1)
-	if (strtoreal(st_local(rc)))                                exit(error(  1))
+	if ((tmp=strtoreal(st_local(rc))) & tmp < 200)              exit(error(  1))
 
 	// default values of member variables                                       
 	/* default IC, lag selection MODE  and confidence LEVEL                   */
@@ -117,7 +117,7 @@ mata set matastrict on
 		for(j = 1; j <= rows(ms); j++) {
 			// // produce error 1 on any _rc caused by pressing the break key   
 			(void) _stata("`version' loc " + rc + " = _rc", 1)
-			if (strtoreal(st_local(rc)))                        exit(error(  1))
+			if ((tmp=strtoreal(st_local(rc))) & tmp < 200)      exit(error(  1))
 			// estimate a [S]ARIMA[X] model                                     
 			if (_stata("`version' arima " + varlist + " " + ifin + " " + iw    +
 			       ", arima("+invtokens(strofreal(ms[j,1..3]))+") "            +
@@ -195,8 +195,7 @@ mata set matastrict on
 		returns: N/A, updates: * in the associative array                (. x .)
 	*/
 	`RS' s, D, d, c
-	`TM' tmp, rc
-	rc = st_tempname()
+	`TM' tmp
 
 	// general configuration                                                    
 	level = exists("level") & (tmp=get("level")) != . ? tmp : this.level
@@ -317,9 +316,6 @@ mata set matastrict on
 				   tmp : mode
 			d--
 			do {
-				// produce error 1 on any _rc caused by pressing the break key  
-				(void) _stata("`version' loc " + rc + " = _rc", 1)
-				if (strtoreal(st_local(rc)))                    exit(error(  1))
 				// estimate #d recursively                                      
 				d++
 				if ((tmp=_stata("`version' dfgls "                             +
@@ -805,3 +801,4 @@ mata set matastrict on
 end
 
 version 15.1: lmbuild larimaauto.mlib, replace size(8)
+* an extra line to even the total number
